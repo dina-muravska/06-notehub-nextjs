@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { fetchNotes } from "@/lib/api";
+import css from "./NotesPage.module.css";
 
 import NoteList from "@/components/NoteList/NoteList";
 import Pagination from "@/components/Pagination/Pagination";
@@ -44,7 +45,9 @@ export default function NotesClient() {
           setPage(1);
         }}
       />
-      <button onClick={() => setIsOpen(true)}>Create note</button>
+      <button className={css.button} onClick={() => setIsOpen(true)}>
+        Create note
+      </button>
       {data.notes.length > 0 && <NoteList notes={data.notes} />}
       {data.notes.length === 0 && <p>No notes found</p>}
       {data.totalPages > 1 && (
