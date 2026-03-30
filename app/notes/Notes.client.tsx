@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { fetchNotes } from "@/lib/api";
 
 import NoteList from "@/components/NoteList/NoteList";
 import Pagination from "@/components/Pagination/Pagination";
 import Modal from "@/components/Modal/Modal";
 import NoteForm from "@/components/NoteForm/NoteForm";
+import SearchBox from "@/components/SearchBox/SearchBox";
 
 export default function NotesClient() {
   const [page, setPage] = useState(1);
@@ -27,6 +28,7 @@ export default function NotesClient() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["notes", page, debouncedSearch],
     queryFn: () => fetchNotes({ page, search: debouncedSearch }),
+    placeholderData: keepPreviousData,
   });
 
   if (isLoading) return <p>Loading...</p>;
@@ -35,14 +37,12 @@ export default function NotesClient() {
 
   return (
     <div>
-      <input
-        type="text"
+      <SearchBox
         value={search}
-        onChange={(e) => {
-          setSearch(e.target.value);
+        onSearch={(value) => {
+          setSearch(value);
           setPage(1);
         }}
-        placeholder="Search notes..."
       />
       <button onClick={() => setIsOpen(true)}>Create note</button>
       {data.notes.length > 0 && <NoteList notes={data.notes} />}
